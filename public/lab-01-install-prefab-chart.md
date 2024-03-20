@@ -2,16 +2,58 @@
 
 ## A. Prerequisites
 
-1. Install Docker
-# To-do
+### Install Docker
+Docker has a convenient installation script if you're on a *nix-based system. If you're on Windows, [Docker Desktop](https://docs.docker.com/desktop/install/windows-install/) is recommended.
+1. In a terminal, download the Docker install script.
 
-2. Install K3d
-# To-do
+```
+curl -fsSL https://get.docker.com -o get-docker.sh
+```
 
-3. Install kubectl
-# To-do
+2. Run the Docker install script.  
 
-4. Install Helm
+```
+sh get-docker.sh
+```
+
+3. Set permissions so you can run Docker without sudo.
+
+```
+sudo groupadd docker
+sudo usermod -aG docker $USER
+```
+
+4. For the permissions to take effect, logout and back in and/or open a new user shell.
+
+5. Test the Docker installation.
+
+```
+docker run hello-world
+```
+
+### Install K3D
+
+6. Run the K3D installer script.
+
+```
+curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
+```
+
+7. Create a cluster.
+
+```
+k3d cluster create mycluster
+```
+
+8. Follow [these instructions](https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/) to install kubeclt on your OS and architecture.
+
+9. Verify kubectl can communicate with your k3d cluster.
+
+```
+kubectl get nodes
+```
+
+10. Run the Helm installer script.
 
 ```
 curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
