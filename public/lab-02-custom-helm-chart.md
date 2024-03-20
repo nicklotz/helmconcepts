@@ -115,6 +115,8 @@ docker build -t $DOCKERUSER/myapp:v1 .
 docker push $DOCKERUSER/myapp:v1
 ```
 
+## C. Create and configure a custom Helm chart.
+
 12. Create/initialize a helm chart for myapp.
 
 ```
