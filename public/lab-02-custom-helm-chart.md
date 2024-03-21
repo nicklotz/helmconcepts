@@ -20,10 +20,10 @@ cd myapp/
 touch myapp.py
 ```
 
-4. Open myapp.py and paste the following Python code.
+4. Paste and run the following to add Python code to myapp.py
 
 ```python
-# myapp.py
+cat << EOF > myapp.py
 from flask import Flask
 app = Flask(__name__)
 
@@ -33,24 +33,20 @@ def welcome():
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0')
-
+EOF
 ```
 
-5. Save and close myapp.py.
-
-6. Create a new file called **requirements.txt**.
+5. Create a new file called **requirements.txt**.
 
 ```
 touch requirements.txt
 ```
 
-7. Open requirements.txt and add the following.
+7. Add the following to requirements.txt.
 
 ```
-Flask==3.0.2
+echo "Flask==3.0.2" > requirements.txt
 ```
-
-8. Save and close requirements.txt
 
 ## B. Dockerize your application
 
@@ -72,10 +68,10 @@ Flask==3.0.2
 touch Dockerfile
 ```
 
-8. Open Dockerfile and paste the following content.
+8. Paste the following followed by **Enter** to modify the Dockerfile. 
 
 ```
-# Dockerfile
+cat << EOF > Dockerfile
 FROM python:3.9-slim
 
 WORKDIR /app
@@ -86,6 +82,7 @@ RUN pip install -r requirements.txt
 COPY . .
 
 CMD ["python", "./myapp.py"]
+EOF
 ```
 
 9. Log into Docker Hub. Enter your Docker username and access token when prompted.
@@ -117,10 +114,152 @@ docker push $DOCKERUSER/myapp:v1
 
 ## C. Create and configure a custom Helm chart.
 
-12. Create/initialize a helm chart for myapp.
+1. Create/initialize a helm chart for myapp.
 
 ```
 helm create myapp-chart
 ```
 
+2. Navigate into the myapp-chart directory.
+
+```
+cd myapp-chart
+```
+
+3. Paste and execute the following in your terminal to update **Chart.yaml** with chart metadata.
+
+```yaml
+cat << EOF >> Chart.yaml
+apiVersion: v2
+name: myapp
+description: A Helm chart for Kubernetes to deploy My Python Application
+type: application
+version: 0.1.0
+appVersion: "1.0"
+EOF
+```
+
+4. Set configurable chart parameters in **values.yaml**
+
+```yaml
+cat << EOF > values.yaml 
+replicaCount: 1
+
+image:
+  repository: $DOCKERUSER/myapp
+  pullPolicy: IfNotPresent
+  tag: "v1"
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: false
+  annotations: {}
+  hosts:
+    - host: myapp.example.com
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls: []
+
+resources: {}
+EOF
+```
+
+5. Edit **deployment.yaml** to use values from **values.yaml**.
+
+```
+cat << EOF > templates/deployment.yaml 
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "myapp.fullname" . }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "myapp.name" . }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "myapp.name" . }}
+    spec:
+      containers:
+        - name: myapp
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: 80
+EOF
+```
+
+6. Edit **service.yaml** to use parameters from **values.yaml**.
+
+```yaml
+cat << EOF > templates/service.yaml 
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "myapp.fullname" . }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: 80
+  selector:
+    app.kubernetes.io/name: {{ include "myapp.name" . }}
+EOF
+```
+
+7. Specify the chart's **ingress.yaml** to use the values from **values.yaml**.
+
+```yaml
+cat << EOF > templates/ingress.yaml 
+{{- if .Values.ingress.enabled -}}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "myapp.fullname" . }}
+  labels:
+    {{- include "myapp.labels" . | nindent 4 }}
+  {{- with .Values.ingress.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  {{- if .Values.ingress.className }}
+  ingressClassName: {{ .Values.ingress.className }}
+  {{- end }}
+  rules:
+    {{- range .Values.ingress.hosts }}
+    - host: {{ .host }}
+      http:
+        paths:
+          {{- range .paths }}
+          - path: {{ .path }}
+            pathType: {{ .pathType }}
+            backend:
+              service:
+                name: {{ include "myapp.fullname" . }}
+                port:
+                  number: {{ $.Values.service.port }}
+          {{- end }}
+    {{- end }}
+  {{- if .Values.ingress.tls }}
+  tls:
+    {{- range .Values.ingress.tls }}
+    - hosts:
+        {{- range .hosts }}
+        - {{ . }}
+        {{- end }}
+      secretName: {{ .secretName }}
+    {{- end }}
+  {{- end }}
+{{- end }}
+EOF
+```
+
+7. 
 
