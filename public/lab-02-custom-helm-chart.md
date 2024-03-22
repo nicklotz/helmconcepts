@@ -50,13 +50,7 @@ echo "Flask==3.0.2" > requirements.txt
 
 6. Copy the token's value and paste in a safe place.
 
-7. Back on your computer, inside the myapp/ directory, create a Dockerfile.
-
-```
-touch Dockerfile
-```
-
-8. Paste the following followed by **Enter** to modify the Dockerfile. 
+7. Back on your computer, paste and run the following to add build steps to a new **Dockerfile**.
 
 ```
 cat << EOF > Dockerfile
@@ -73,7 +67,7 @@ CMD ["python", "./myapp.py"]
 EOF
 ```
 
-9. Log into Docker Hub. Enter your Docker username and access token when prompted.
+8. Authenticate to Docker Hub. Enter your Docker username and access token when prompted.
 
 ```
 docker login
@@ -100,37 +94,78 @@ docker build -t $DOCKERUSER/myapp:v1 .
 docker push $DOCKERUSER/myapp:v1
 ```
 
-## C. Create and configure a custom Helm chart.
+12. Return to Docker Hub in your web browser. Navigate to **Repositories**, then click into your $DOCKERUSER/myapp repository. Verify an image with the tag **v1** has been successfully pushed.
 
-1. Create/initialize a helm chart for myapp.
+## C. Create and configure a custom Helm chart for your application
 
-```
-helm create myapp-chart
-```
-
-2. Navigate into the myapp-chart directory.
+1. From within the **myapp/ directory**, create a new directory for writing your helm chart.
 
 ```
-cd myapp-chart
+mkdir helm/
 ```
 
-3. Paste and execute the following in your terminal to update **Chart.yaml** with chart metadata.
+2. Run the following to create a new chart directory structure.
+
+```
+helm create myapp
+```
+
+3. Change into the **helm/myapp/ directory.
+   
+4. Inspect the directory contents. Note the presence of **Chart.yaml**, **values.yaml**, and a directory called **templates**.
+
+```
+ls -la
+```
+
+6. Inspect the content of Chart.yaml.
+
+```
+cat Chart.yaml
+```
+
+7. Change into the **templates/** directory and inspect its contents.
+
+```
+cd templates/
+```
+```
+ls -la
+```
+
+8. Delete the **NOTES.txt** file for now. We'll create and populate a new NOTES.txt later
+
+```
+rm NOTES.txt
+```
+
+9. Navigate up a level so you are back in the helm/myapp chart root.
+
+```
+cd ../
+```
+```
+pwd
+```
+
+10. Inspect the default **values.yaml** file. We're going to modify this with our own values.
+
+```
+cat values.yaml
+```
+
+11. Set an environment variable for your Docker username (in case it was prevously reset).
+
+```
+read -p "Docker username: " DOCKERUSER
+```
+
+Type your Docker username, then press **Return**.
+
+11. Paste and run the following to replace the default values.yaml configuration with one for our own app.
 
 ```yaml
-cat << EOF >> Chart.yaml
-apiVersion: v2
-name: myapp
-description: A Helm chart for Kubernetes to deploy My Python Application
-type: application
-version: 0.1.0
-appVersion: "1.0"
-EOF
-```
-
-4. Set configurable chart parameters in **values.yaml**
-
-```yaml
-cat << EOF > values.yaml 
+cat << EOF > values.yaml
 replicaCount: 1
 
 image:
@@ -138,116 +173,86 @@ image:
   pullPolicy: IfNotPresent
   tag: "v1"
 
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: true
+  automount: true
+  annotations: {}
+  name: ""
+
+podAnnotations: {}
+podLabels: {}
+
+podSecurityContext: {}
+
+securityContext: {}
+
 service:
   type: ClusterIP
-  port: 80
+  port: 5000
 
 ingress:
-  enabled: false
-  annotations: {}
+  enabled: true
+  className: ""
+  annotations:
+    ingress.kubernetes.io/ssl-redirect: "false"
   hosts:
-    - host: myapp.example.com
+    - host: ""
       paths:
         - path: /
-          pathType: ImplementationSpecific
-  tls: []
+          pathType: Prefix
+  tls: [] 
+
 
 resources: {}
+
+livenessProbe:
+  httpGet:
+    path: /
+    port: http
+readinessProbe:
+  httpGet:
+    path: /
+    port: http
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+
+volumes: []
+
+volumeMounts: []
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
 EOF
 ```
 
-5. Edit **deployment.yaml** to use values from **values.yaml**.
+12. Run **helm lint** to do a syntax check on your customized chart.
 
 ```
-cat << EOF > templates/deployment.yaml 
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: {{ include "myapp.fullname" . }}
-spec:
-  replicas: {{ .Values.replicaCount }}
-  selector:
-    matchLabels:
-      app.kubernetes.io/name: {{ include "myapp.name" . }}
-  template:
-    metadata:
-      labels:
-        app.kubernetes.io/name: {{ include "myapp.name" . }}
-    spec:
-      containers:
-        - name: myapp
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
-          ports:
-            - containerPort: 80
-EOF
+helm lint .
 ```
 
-6. Edit **service.yaml** to use parameters from **values.yaml**.
+13. Navigate up a level into the **helm/** directory.
 
-```yaml
-cat << EOF > templates/service.yaml 
-apiVersion: v1
-kind: Service
-metadata:
-  name: {{ include "myapp.fullname" . }}
-spec:
-  type: {{ .Values.service.type }}
-  ports:
-    - port: {{ .Values.service.port }}
-      targetPort: 80
-  selector:
-    app.kubernetes.io/name: {{ include "myapp.name" . }}
-EOF
+```
+cd ../
+```
+```
+pwd
 ```
 
-7. Specify the chart's **ingress.yaml** to use the values from **values.yaml**.
+## D. Package and install the custom helm chart
 
-```yaml
-cat << EOF > templates/ingress.yaml 
-{{- if .Values.ingress.enabled -}}
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: {{ include "myapp.fullname" . }}
-  labels:
-    {{- include "myapp.labels" . | nindent 4 }}
-  {{- with .Values.ingress.annotations }}
-  annotations:
-    {{- toYaml . | nindent 4 }}
-  {{- end }}
-spec:
-  {{- if .Values.ingress.className }}
-  ingressClassName: {{ .Values.ingress.className }}
-  {{- end }}
-  rules:
-    {{- range .Values.ingress.hosts }}
-    - host: {{ .host }}
-      http:
-        paths:
-          {{- range .paths }}
-          - path: {{ .path }}
-            pathType: {{ .pathType }}
-            backend:
-              service:
-                name: {{ include "myapp.fullname" . }}
-                port:
-                  number: {{ $.Values.service.port }}
-          {{- end }}
-    {{- end }}
-  {{- if .Values.ingress.tls }}
-  tls:
-    {{- range .Values.ingress.tls }}
-    - hosts:
-        {{- range .hosts }}
-        - {{ . }}
-        {{- end }}
-      secretName: {{ .secretName }}
-    {{- end }}
-  {{- end }}
-{{- end }}
-EOF
-```
 
-7. 
+
 
