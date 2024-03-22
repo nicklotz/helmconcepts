@@ -243,7 +243,7 @@ affinity: {}
 EOF
 ```
 
-12. Run **helm lint** to do a syntax check on your customized chart.
+12. Run **helm lint** to do a syntax check on your customized chart. The output should read `1 chart(s) linted, 0 chart(s) failed`.
 
 ```
 helm lint .
