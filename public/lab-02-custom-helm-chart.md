@@ -110,7 +110,14 @@ mkdir helm/
 helm create myapp
 ```
 
-3. Change into the **helm/myapp/ directory.
+3. Change into the **helm/myapp/** directory.
+
+```
+cd myapp/
+```
+```
+pwd
+```
    
 4. Inspect the directory contents. Note the presence of **Chart.yaml**, **values.yaml**, and a directory called **templates**.
 
@@ -118,13 +125,13 @@ helm create myapp
 ls -la
 ```
 
-6. Inspect the content of Chart.yaml.
+5. Inspect the content of Chart.yaml.
 
 ```
 cat Chart.yaml
 ```
 
-7. Change into the **templates/** directory and inspect its contents.
+6. Change into the **templates/** directory and inspect its contents.
 
 ```
 cd templates/
@@ -133,13 +140,13 @@ cd templates/
 ls -la
 ```
 
-8. Delete the **NOTES.txt** file for now. We'll create and populate a new NOTES.txt later
+7. Delete the **NOTES.txt** file for now. We'll create and populate a new NOTES.txt later
 
 ```
 rm NOTES.txt
 ```
 
-9. Navigate up a level so you are back in the helm/myapp chart root.
+8. Navigate up a level so you are back in the helm/myapp chart root.
 
 ```
 cd ../
@@ -148,13 +155,13 @@ cd ../
 pwd
 ```
 
-10. Inspect the default **values.yaml** file. We're going to modify this with our own values.
+9. Inspect the default **values.yaml** file. We're going to modify this with our own values.
 
 ```
 cat values.yaml
 ```
 
-11. Set an environment variable for your Docker username (in case it was prevously reset).
+10. Set an environment variable for your Docker username (in case it was prevously reset).
 
 ```
 read -p "Docker username: " DOCKERUSER
