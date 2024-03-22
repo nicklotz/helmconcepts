@@ -14,13 +14,7 @@ mkdir myapp/
 cd myapp/
 ```
 
-3. Create a new file called **myapp.py**
-
-```
-touch myapp.py
-```
-
-4. Paste and run the following to add Python code to myapp.py
+3. Paste and run the following to add Python code to a new file called myapp.py
 
 ```python
 cat << EOF > myapp.py
@@ -36,13 +30,7 @@ if __name__ == '__main__':
 EOF
 ```
 
-5. Create a new file called **requirements.txt**.
-
-```
-touch requirements.txt
-```
-
-7. Add the following to requirements.txt.
+4. Paste and run the following to add the following dependency to a new **requirements.txt** file.
 
 ```
 echo "Flask==3.0.2" > requirements.txt
