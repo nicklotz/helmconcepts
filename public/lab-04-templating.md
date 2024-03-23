@@ -201,3 +201,79 @@ helm upgrade myapptemplate myapptemplate --version 0.4.0 --set image.repository=
 ```
 kubectl describe pods | grep Image
 ```
+
+26. Cleanup the current release.
+
+```
+helm uninstall myapptemplate
+```
+
+## B. Go logic in templates
+
+1. Navigate into **myapptemplate/templates**.
+
+```
+cd myapptemplate/templates
+```
+
+2. Paste the following into the **spec.containers** portion of **deployments.yaml**, just after line 53.
+
+```yaml
+          env:
+           - name: ENVIRONMENT
+             value: test
+          {{- end }}
+```
+
+The indentation relative to the surrounding code should look like this:
+
+```
+    50	          volumeMounts:
+    51	            {{- toYaml . | nindent 12 }}
+    52	          {{- end }}
+    53	          {{- if .Values.environment.isTest }}
+    54	          env:
+    55	           - name: ENVIRONMENT
+    56	             value: test
+    57	          {{- end }}
+    58	      {{- with .Values.volumes }}
+    59	      volumes:
+    60	        {{- toYaml . | nindent 8 }}
+    61        {{- end }}
+```
+
+3. Navigate up to **myapptemplates**. Paste and run the follwoing to add a booleon environment variable to **values.yaml**.
+
+```
+cd ../
+```
+```
+```yaml
+cat << EOF >> values.yaml
+environment:
+  isTest: false
+EOF
+```
+```
+cat -n values.yaml
+```
+
+4. Package and update the release.
+
+```
+cd ../
+```
+```
+helm package myapptemplate
+```
+```
+helm upgrade myapptemplate myapptemplate --version 0.4.0 --set environment.isTest=true
+```
+
+5. Check the deployment's environment variables.
+
+```
+kubectl set env deployment/myapptemplate --list
+```
+
+6. 
