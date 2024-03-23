@@ -348,7 +348,7 @@ version: 0.2.0
 appVersion: "2.0.0"
 ```
 
-10. Open **values.yaml**. Change **image.tag** do use the **v2** Docker image.
+10. Open **values.yaml**. Change **image.tag** to use the **v2** Docker image.
 
 ```yaml
 image:
