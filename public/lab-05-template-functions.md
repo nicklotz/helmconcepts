@@ -100,11 +100,26 @@ Type your Docker username, then press **Return**.
 docker build -t $DOCKERUSER/myspringapp:0.0.1 .
 ```
 
-13. Push the image to Docker Hub.
+13. **OPTIONAL**: Test the container locally. Be sure to clean up when done.
+
+```
+docker run -d -p 8080:8080 myspringapp
+```
+```
+curl https://localhost:8080
+```
+```
+docker stop <CONTAINER_ID>
+```
+```
+docker rm <CONTAINER_ID>
+```
+
+14. Push the image to Docker Hub.
 
 ```
 docker push $DOCKERUSER/myspringapp:0.0.1
 ```
 
-14. Return to Docker Hub in your web browser. Navigate to **Repositories**, then click into your $DOCKERUSER/myspringapp repository. Verify an image with the tag **0.0.1** has been successfully pushed.
+15. Return to Docker Hub in your web browser. Navigate to **Repositories**, then click into your $DOCKERUSER/myspringapp repository. Verify an image with the tag **0.0.1** has been successfully pushed.
 
