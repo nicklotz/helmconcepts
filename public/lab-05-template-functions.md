@@ -143,9 +143,9 @@ cat << EOF > values.yaml
 replicaCount: 1
 
 image:
-  repository: spring-boot-app
+  repository: $DOCKERUSER/myspringapp
   pullPolicy: IfNotPresent
-  tag: "latest"
+  tag: "0.0.1"
 
 service:
   type: ClusterIP
@@ -166,16 +166,16 @@ cat << EOF > templates/deployment.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "spring-boot-app.fullname" . | trunc 63 | trimSuffix "-" }}
+  name: {{ include "myspringapp.fullname" . | trunc 63 | trimSuffix "-" }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: {{ include "spring-boot-app.name" . }}
+      app: {{ include "myspringapp.name" . }}
   template:
     metadata:
       labels:
-        app: {{ include "spring-boot-app.name" . }}
+        app: {{ include "myspringapp.name" . }}
     spec:
       containers:
         - name: {{ .Chart.Name }}
