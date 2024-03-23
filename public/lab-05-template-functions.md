@@ -265,14 +265,61 @@ EOF
 cat -n values.yaml
 ```
 
-6. Run the following to update the **env** block in **templates/deployment.yaml**.
+6. Update the **env** block in **templates/deployment.yaml** so it looks as follow.
 
 ```yaml
-cat << EOF >> templates/deployment.yaml
-            {{- range $key, $value := .Values.appConfig.additionalProperties }}
-            - name: {{ $key | upper | replace "." "_" }}
-              value: {{ $value | quote }}
-            {{- end }}
+        env:
+          - name: SPRING_PROFILES_ACTIVE
+            value: {{ .Values.appConfig.environment | quote }}
+          {{- range $key, $value := .Values.appConfig.additionalProperties }}
+          - name: {{ $key | upper | replace "." "_" }}
+            value: {{ $value | quote }}
+          {{- end }}
+```
+```
+cat templates/deployment.yaml
+```
+
+7. Create a **custom** values yaml with specific overrides.
+
+```yaml
+cat << EOF > custom-values.yaml
+replicaCount: 3
+appConfig:
+  environment: staging
+  additionalProperties:
+    example.property: "Custom Value"
 EOF
 ```
+
+8. Test and deploy the updated chart using the custom values YAML.
+
+```
+helm lint .
+```
+```
+cd ../
+```
+```
+helm install myspringapp ./myspringapp
+```
+
+9. Check if the chart deployed with the custom values.
+
+```
+kubectl get pods
+```
+```
+kubectl set env deployment/myspringapp --list
+```
+
+10. Clean up.
+
+```
+helm uninstall myspringapp
+```
+
+
+
+
 
