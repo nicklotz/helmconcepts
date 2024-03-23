@@ -37,7 +37,7 @@ rm myspringapp.zip
 cd myspringapp/
 ```
 
-7. Create a new Java class in the project called **HelloController** that serves a welcome message.
+7. Paste and run the following to create a new Java class in the project called **HelloController** that serves a welcome message.
 
 ```java
 cat << EOF > src/main/java/com/example/myspringapp/HelloController.java
@@ -56,6 +56,9 @@ public class HelloController {
 }
 EOF
 ```
+```
+cat -n src/main/java/com/example/myspringapp/HelloController.java
+```
 
 8. Build the app with the provided Maven wrapper.
 
@@ -63,4 +66,18 @@ EOF
 ./mvnw package
 ```
 
-9. 
+9. Paste and run the following to create a new Dockerfile that containerizes the application.
+
+```Dockerfile
+cat << EOF > Dockerfile
+FROM openjdk:17.0.2-slim-buster
+COPY target/myspringapp-0.0.1-SNAPSHOT.jar app.jar
+
+EXPOSE 8080
+
+ENTRYPOINT ["java","-jar","/app.jar"]
+EOF
+```
+
+10. 
+
