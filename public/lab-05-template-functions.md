@@ -150,7 +150,7 @@ replicaCount: 1
 
 image:
   repository: $DOCKERUSER/myspringapp
-  pullPolicy: IfNotPresent
+  pullPolicy: Always
   tag: "0.0.1"
 
 service:
@@ -200,4 +200,79 @@ cat -n templates/deployment.yaml
 
 5. Deploy the Helm chart.
 
+```
+helm lint .
+```
+```
+cd ../
+```
+```
+helm install myspringapp ./myspringapp
+```
+
+6. Check that the app is serving as expected (we didn't configure an ingress in this example).
+
+```
+kubectl get pods
+```
+```
+kubectl port-forward <POD_NAME> 8080:8080
+```
+```
+curl http://localhost:8080
+```
+
+7. Uninstall the current release.
+
+```
+helm uninstall myspringapp
+```
+
+## C. Custom configurations
+
+1. Install a one-off customization of the helm chart, specifying a different replica count and "app environment".
+
+```
+helm install spring-boot-app ./spring-boot-app --set replicaCount=2,appConfig.environment=production
+```
+
+2. Check that the deployment's pods are running. How many are running now, and why?
+
+```
+kubectl get pods
+```
+
+3. Check if the environment variable was set correctly as well.
+
+```
+kubectl set env deployment/myspringapp --list
+```
+
+4. Uninstall the current release.
+
+```
+helm uninstall myspringapp
+```
+
+5. Paste and run the following to add a new setting to the **appConfig** key in **values.yaml**.
+
+```
+cat << EOF >> values.yaml
+  additionalProperties: {}
+EOF
+```
+```
+cat -n values.yaml
+```
+
+6. Run the following to update the **env** block in **templates/deployment.yaml**.
+
+```yaml
+cat << EOF >> templates/deployment.yaml
+            {{- range $key, $value := .Values.appConfig.additionalProperties }}
+            - name: {{ $key | upper | replace "." "_" }}
+              value: {{ $value | quote }}
+            {{- end }}
+EOF
+```
 
