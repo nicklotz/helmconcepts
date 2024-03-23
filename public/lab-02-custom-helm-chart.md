@@ -260,6 +260,142 @@ pwd
 
 ## D. Package and install the custom helm chart
 
+1. From inside the **helm/** directory (not helm/myapp/), run the following to package your helm chart.
+
+```
+helm package myapp
+```
+
+2. Deploy the helm chart to your cluster.
+
+```
+helm install myapp ./myapp-0.1.0.tgz
+```
+
+3. Check that **myapp** successfully deployed.
+
+```
+helm list
+```
+```
+kubectl get deployments
+```
+```
+kubectl get services
+```
+```
+kubectl get pods
+```
+
+4. Test connecting to your application's via the ingress rules set in values.yaml. The output be the welcome message defined in your program.
+
+```
+curl http://localhost
+```
+
+## E. Create and deply a new version of the application and helm chart.
+
+1. Navigate up to the *parent* **myapp/** directory.
+
+```
+cd ../
+```
+
+2. Modify **myapp.py** so the welcome message prints something like "Welcome to My App Version 2!"
+
+3. Build a new version of a Docker image, this time with a **v2** tag.
+
+```
+docker build -t $DOCKERUSER/myapp:v2 .
+```
+
+4. Push the new image and tag to Docker Hub.
+
+```
+docker push $DOCKERUSER/myapp:v2
+```
+
+5. In a web browser, navigate to your Docker Hub account and verify a new image with the **v2** tag is there.
+
+6. Back in your terminal, navigate to the **helm/myapp/templates** directory.
+
+```
+cd helm/myapp/templates
+```
+
+7. Paste and run the following to create a **NOTES.txt** file with post-deployment instructions.
+
+```
+cat << EOF > NOTES.txt
+You can access My App by connecting to localhost at port 80
+E.g. curl http://localhost:80
+EOF
+```
+
+8. Navigate up a level back into the **helm/myapps** directory.
+
+```
+cd ../
+```
+```
+pwd
+```
+
+9. Open **Chart.yaml** and change the following parameters to increment the versions of your application and chart, respectively.
+
+```yaml
+version: 0.2.0
+appVersion: "2.0.0"
+```
+
+10. Open **values.yaml**. Change **image.tag** do use the **v2** Docker image.
+
+```yaml
+image:
+  repository: nicklotz/myapp
+  pullPolicy: IfNotPresent
+  tag: "v2"  # CHANGE THE TAG HERE TO "v2"
+```
+
+11. Run **helm lint** to do a syntax check on your customized chart. The output should read `1 chart(s) linted, 0 chart(s) failed`.
+
+```
+helm lint .
+```
+
+12. Navigate up a level into the **helm/** directory.
+
+```
+cd ../
+```
+```
+pwd
+```
+
+13. From inside the **helm/** directory (not helm/myapp/), run the following to package your helm chart. A new **myapp-0.2.0.tgz** should be created.
+
+```
+helm package myapp
+```
+
+14. Upgrade your deployed helm chart to the new version.
+
+```
+helm upgrade myapp myapp --version 0.2.0
+```
+
+15. Connect to **myapp** to verify the new version is running.
+
+```
+curl http://localhost
+```
+
+16. Check the App and Chart versions in `helm list`.
+
+```
+helm list
+```
+
 
 
 
