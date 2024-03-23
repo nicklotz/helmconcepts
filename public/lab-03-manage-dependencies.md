@@ -1,3 +1,5 @@
+# Lab 3: Chart Dependencies
+
 ## A. Add required dependencies to your helm chart
 
 1. In your terminal, navigate to the **myapp/helm/myapp** directory.
