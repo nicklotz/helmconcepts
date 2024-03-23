@@ -396,6 +396,12 @@ curl http://localhost
 helm list
 ```
 
+17. Cleanup.
+
+```
+helm uninstall myapp
+```
+
 
 
 
