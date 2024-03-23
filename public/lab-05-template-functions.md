@@ -41,7 +41,7 @@ cd myspringapp/
 
 ```java
 cat << EOF > src/main/java/com/example/myspringapp/HelloController.java
-package com.example.demo;
+package com.example.myspringapp;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
