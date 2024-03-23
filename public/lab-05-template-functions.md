@@ -132,7 +132,7 @@ mkdir helm/
 cd helm/
 ```
 ```
-helm create myspringapp/
+helm create myspringapp
 cd myspringapp/
 ```
 
