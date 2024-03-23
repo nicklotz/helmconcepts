@@ -315,7 +315,7 @@ That section of deployment.yaml should therefore look like:
     65	        {{- toYaml . | nindent 8 }}
 ```
 
-8. Add some environment variables **values.yaml**.
+8. Add some environment variables to **values.yaml**.
 
 ```
 cd ../
