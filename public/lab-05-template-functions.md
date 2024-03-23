@@ -79,5 +79,32 @@ ENTRYPOINT ["java","-jar","/app.jar"]
 EOF
 ```
 
-10. 
+10. Authenticate to Docker Hub. Enter your Docker username and access token when prompted.
+
+```
+docker login
+```
+
+11. Set an environment variable for your Docker username.
+
+```
+read -p "Docker username: " DOCKERUSER
+```
+
+Type your Docker username, then press **Return**.
+
+
+12. Build your docker image.
+
+```
+docker build -t $DOCKERUSER/myspringapp:0.0.1 .
+```
+
+13. Push the image to Docker Hub.
+
+```
+docker push $DOCKERUSER/myspringapp:0.0.1
+```
+
+14. Return to Docker Hub in your web browser. Navigate to **Repositories**, then click into your $DOCKERUSER/myspringapp repository. Verify an image with the tag **0.0.1** has been successfully pushed.
 
