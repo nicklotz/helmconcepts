@@ -8,7 +8,7 @@
 sudo apt install openjdk-17-jre-headless
 ```
 
-2. In a web browser, go to [https://start.spring.io] to bootstrap a new Spring App. Select the following options:
+2. In a web browser, go to [https://start.spring.io](https://start.spring.io) to bootstrap a new Spring App. Select the following options:
     - Project: **Maven**
     - Language: **Java**
     - Spring Boot: **3.2.4**
