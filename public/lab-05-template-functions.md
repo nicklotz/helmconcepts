@@ -136,7 +136,13 @@ helm create myspringapp
 cd myspringapp/
 ```
 
-2. Past and run the following to create a customized **values.yaml**.
+2. Clean up most of the template boilerplate.
+
+```
+rm templates/NOTES.txt templates/hpa.yaml templates/ingress.yaml templates/serviceaccount.yaml
+```
+
+3. Past and run the following to create a customized **values.yaml**.
 
 ```yaml
 cat << EOF > values.yaml
@@ -159,7 +165,7 @@ EOF
 cat values.yaml
 ```
 
-3. Paste and run the following to create a customized **deployment.yaml**. Note the use of piping and built-in template functions.
+4. Paste and run the following to create a customized **deployment.yaml**. Note the use of piping and built-in template functions.
 
 ```yaml
 cat << EOF > templates/deployment.yaml
@@ -192,6 +198,6 @@ EOF
 cat -n templates/deployment.yaml
 ```
 
-4. Deploy the Helm chart.
+5. Deploy the Helm chart.
 
 
