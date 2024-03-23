@@ -276,4 +276,77 @@ helm upgrade myapptemplate myapptemplate --version 0.4.0 --set environment.isTes
 kubectl set env deployment/myapptemplate --list
 ```
 
-6. 
+We can also use **range**, basically a for loop, to iterate over an arbitrary list of values.
+
+6. Navigate back to **myapptemplates/templates/**.
+
+```
+cd myapptemplates/templates/
+```
+
+7. Paste the following code below line 57 in **deployment.yaml**, i.e. underneath your previous change.
+
+```yaml
+          env:
+          {{- range .Values.envVars }}
+           - name: {{ .name }}
+             value: {{ .value }}
+          {{- end }}
+```
+
+That section of deployment.yaml should therefore look like:
+
+```yaml
+    50	          volumeMounts:
+    51	            {{- toYaml . | nindent 12 }}
+    52	          {{- end }}
+    53	          {{- if .Values.environment.isTest }}
+    54	          env:
+    55	           - name: ENVIRONMENT
+    56	             value: test
+    57	          {{- end }}
+    58	          env:
+    59	          {{- range .Values.envVars }}
+    60	           - name: {{ .name }}
+    61	             value: {{ .value }}
+    62	          {{- end }}
+    63	      {{- with .Values.volumes }}
+    64	      volumes:
+    65	        {{- toYaml . | nindent 8 }}
+```
+
+8. Add some environment variables **values.yaml**.
+
+```
+cd ../
+```
+```yaml
+cat << EOF >> values.yaml
+
+envVars:
+- name: os
+  value: ubuntu
+- name: region
+  value: emea
+- name: tier
+  value: premium
+EOF
+```
+
+9. Package and update the release.
+
+```
+cd ../
+```
+```
+helm package myapptemplate
+```
+```
+helm upgrade myapptemplate myapptemplate --version 0.4.0 --set environment.isTest=true
+```
+
+10. Check the deployment's environment variables. Do you see the variables you defined?
+
+```
+kubectl set env deployment/myapptemplate --list
+```
