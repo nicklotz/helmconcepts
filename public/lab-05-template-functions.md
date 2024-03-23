@@ -123,3 +123,75 @@ docker push $DOCKERUSER/myspringapp:0.0.1
 
 15. Return to Docker Hub in your web browser. Navigate to **Repositories**, then click into your $DOCKERUSER/myspringapp repository. Verify an image with the tag **0.0.1** has been successfully pushed.
 
+## B. Customize and deploy a Helm chart for the app
+
+1. From the **myspringapp/** directory, initialize a new Helm chart.
+
+```
+mkdir helm/
+cd helm/
+```
+```
+helm create myspringapp/
+cd myspringapp/
+```
+
+2. Past and run the following to create a customized **values.yaml**.
+
+```yaml
+cat << EOF > values.yaml
+replicaCount: 1
+
+image:
+  repository: spring-boot-app
+  pullPolicy: IfNotPresent
+  tag: "latest"
+
+service:
+  type: ClusterIP
+  port: 8080
+
+appConfig:
+  environment: "development"
+EOF
+```
+```
+cat values.yaml
+```
+
+3. Paste and run the following to create a customized **deployment.yaml**. Note the use of piping and built-in template functions.
+
+```yaml
+cat << EOF > templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "spring-boot-app.fullname" . | trunc 63 | trimSuffix "-" }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "spring-boot-app.name" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "spring-boot-app.name" . }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default "latest" }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.service.port }}
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: {{ .Values.appConfig.environment | quote }}
+EOF
+```
+```
+cat -n templates/deployment.yaml
+```
+
+4. Deploy the Helm chart.
+
+
