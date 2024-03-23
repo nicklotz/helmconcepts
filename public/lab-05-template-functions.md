@@ -106,7 +106,7 @@ docker build -t $DOCKERUSER/myspringapp:0.0.1 .
 docker run -d -p 8080:8080 myspringapp
 ```
 ```
-curl https://localhost:8080
+curl http://localhost:8080
 ```
 ```
 docker stop <CONTAINER_ID>
