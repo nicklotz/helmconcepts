@@ -166,7 +166,7 @@ cat -n charts/subchart/templates/configmap.yaml
 helm template . | grep configmap -A 4
 ```
 
-**NOTE: All the steps we performed worked fine given the implicit dependency relationship of **subchart** existing as a directory within **parentchart**.
+**NOTE:** All the steps we performed worked fine given the implicit dependency relationship of **subchart** existing as a directory within **parentchart**.
 
 However it's generally considered best practice to declare dependencies explicitly, like as follows within the *parent* chart's Chart.yaml.
 
