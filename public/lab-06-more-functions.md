@@ -121,6 +121,7 @@ cat templates/configmap.yaml
 cat << EOF > values.yaml
 
 deployregion: "Bismarck North_Dakota"
+EOF
 ```
 
 5. Check how the function would be applied to your values (no need to deploy it turns out).
