@@ -44,13 +44,19 @@ kubectl get svc
 kubectl get pods
 ```
 
-6. Uninstall the release.
+6. Test the release with the default **integration test**.
+
+```
+helm test
+```
+
+7. Uninstall the release.
 
 ```
 helm uninstall mycharts
 ```
 
-7. Verify the resources from both charts were removed.
+8. Verify the resources from both charts were removed.
 
 ```
 kubectl get deployments
