@@ -37,6 +37,7 @@ What are the template functions used in this ConfigMap? Look them up in the Helm
 
 ```
 cat << EOF >> values.yaml
+
 approver: "nick"
 
 deploymessage: "To infinity and beyond!"
@@ -68,6 +69,10 @@ kubectl get configmap functionschart-configmap -o yaml
 ```
 
 10. Uninstall the current release.
+
+```
+helm uninstall functionschart
+```
 
 11. Reinstall the Helm chart with a runtime input.
 
@@ -132,4 +137,39 @@ helm template .
 
 How does the custom function manipulate the value of **deployregion** in the config map?
 
-6. Add a loop to apply your custom function to all data in the ConfigMap.
+Next we'll add a loop to apply the custom function iteratively to data in a list.
+
+6. Run the following to replace **deployregion** in **values.yaml** with multiple deployment regions.
+
+```
+sed -i '/^deployregion/d' values.yaml
+```
+```
+cat << EOF >> values.yaml
+
+deployregions:
+  - region: "Bismarck North_Dakota"
+  - region: "Washington DC"
+  - region: "Seoul South_Korea"
+EOF
+```
+```
+cat -n values.yaml
+```
+
+7. Modify **configmap.yaml** to store the regions, parsed by your custom function.
+
+```
+cat << EOF >> templates/configmap.yaml
+  deployregions:
+      {{- range .Values.deployregions }}
+      - region: "{{ include "customfunctions.enforceloweralphas" .region }}"
+      {{- end }}
+EOF
+```
+
+8. Check to see how the template function is applied to a list.
+
+```
+helm template .
+```
