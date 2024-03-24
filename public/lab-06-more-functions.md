@@ -18,7 +18,7 @@ cd functionschart/
 
 4. Paste and run the following to create a new **ConfigMap** template that stores several pieces of data.
 
-```
+```yaml
 cat << EOF > templates/configmap.yaml
 apiVersion: v1
 kind: ConfigMap
@@ -35,7 +35,7 @@ What are the template functions used in this ConfigMap? Look them up in the Helm
 
 5. Paste and run the following to add new keys to **values.yaml**.
 
-```
+```yaml
 cat << EOF >> values.yaml
 
 approver: "nick"
@@ -98,7 +98,7 @@ touch templates/customfunctions.tlp
 
 2. Add a new function to your custom functions file.
 
-```
+```go
 cat << EOF >> templates/customfunctions.tlp
 {{- define "customfunctions.enforceloweralphas" -}}
 {{ . | camelcase | nospace | lower }}
@@ -111,7 +111,7 @@ cat templates/customfunctions.tlp
 
 3. Add a new value to your ConfigMap.
 
-```
+```yaml
 cat << EOF >> templates/configmap.yaml
 deployregion: "{{ include "customfunctions.enforceloweralphas" .Values.deployregion }}"
 EOF
@@ -122,7 +122,7 @@ cat templates/configmap.yaml
 
 4. Updates values.yaml.
 
-```
+```yaml
 cat << EOF >> values.yaml
 
 deployregion: "Bismarck North_Dakota"
@@ -144,7 +144,7 @@ Next we'll add a loop to apply the custom function iteratively to data in a list
 ```
 sed -i '/^deployregion/d' values.yaml
 ```
-```
+```yaml
 cat << EOF >> values.yaml
 
 deployregions:
@@ -159,7 +159,7 @@ cat -n values.yaml
 
 7. Modify **configmap.yaml** to store the regions, parsed by your custom function.
 
-```
+```yaml
 cat << EOF >> templates/configmap.yaml
   deployregions:
       {{- range .Values.deployregions }}
