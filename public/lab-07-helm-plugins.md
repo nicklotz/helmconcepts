@@ -82,6 +82,7 @@ version: "0.1.0"
 usage: "helm user"
 description: "This plugin shows details about the current user using Helm"
 command: "$HELM_PLUGIN_DIR/helm-user"
+EOF
 ```
 
 4. Install the plugin locally.
