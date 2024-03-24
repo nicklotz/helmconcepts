@@ -247,7 +247,6 @@ The indentation relative to the surrounding code should look like this:
 ```
 cd ../
 ```
-```
 ```yaml
 cat << EOF >> values.yaml
 environment:
