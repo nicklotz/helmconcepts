@@ -222,6 +222,9 @@ tests:
       - equal:
           path: spec.replicas
           value: 3
+  - it: manifest should match snapshot
+    asserts:
+      - matchSnapshot: {}
 EOF
 ```
 ```
@@ -231,7 +234,7 @@ cat tests/deployment_test.yaml
 4. Run unit tests (which is just one in this case)/
 
 ```
-helm unittest .
+helm unittest --update-snapshot .
 ```
 
 5. Make a couple changes to the deployment manifest.
@@ -246,7 +249,7 @@ sed -i 's/Deployment/NotDeployment/g' templates/deployment.yaml
 6. Run unit tests again. You should notice a couple errors.
 
 ```
-helm unittest .
+helm unittest --update-snapshot .
 ```
 
 7. Revert the changes and run unit tests again. It should pass.
@@ -258,5 +261,5 @@ sed -i 's/# replicas/replicas/g' templates/deployment.yaml
 sed -i 's/NotDeployment/Deployment/g' templates/deployment.yaml
 ```
 ```
-helm unittest .
+helm unittest --update-snapshot .
 ```
