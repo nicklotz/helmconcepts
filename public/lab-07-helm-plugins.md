@@ -99,5 +99,164 @@ helm plugin install $(pwd)
 helm user
 ```
 
+## C. Use the Helm S3 plugin
 
+1. Install the AWS command line tools if you don't have them, for example
 
+```
+sudo apt-get install -y awscli
+```
+
+2. Authenticate with the command line client.
+
+```
+aws configure
+```
+
+**Note:** Refer to the [AWS documentation](https://docs.aws.amazon.com/cli/v1/userguide/cli-authentication-user.html) for what's needed to authenticate.
+
+3. Set a variable representing a unique name for an S3 bucket.
+
+```
+BUCKETNAME="helmbucket$(date +%s)"
+```
+```
+echo $BUCKETNAME
+```
+
+4. Create a private S3 bucket.
+
+```
+aws s3 mb s3://$BUCKETNAME
+```
+```
+aws s3 ls
+```
+
+5. Initialize the bucket to be a chart repository.
+
+```
+helm s3 init s3://$BUCKETNAME/charts
+```
+
+6. Verify the initialization. You should see an **index.yaml** file was created.
+
+```
+aws s3 ls s3://$BUCKETNAME --recursive
+```
+
+5. Create a dedicated repo for your **pluginscharts**.
+
+```
+helm repo add pluginschart s3://$BUCKETNAME/charts
+```
+
+6. Verify the repo reference locally.
+
+```
+helm repo list
+```
+
+7. Package and push the current version of the **pluginschart** to S3.
+
+```
+helm package plugins
+```
+```
+helm s3 push pluginschart-0.2.0.tgz pluginschart
+```
+
+8. Verify the push succeeded.
+
+```
+aws s3 ls s3://$BUCKETNAME --recursive
+```
+
+9. Delete the local chart file, then fetch it from S3.
+
+```
+rm pluginschart-0.2.0.tgz
+```
+```
+helm fetch pluginschart/pluginschart --version 0.2.0
+```
+
+## D. Unit testing
+
+Helm has a **unittest** plugins for unit testing charts (not to be confused with the built-in **helm test** command**.
+
+1. Install the **unittest** plugin.
+
+```
+helm plugin install https://github.com/helm-unittest/helm-unittest.git
+```
+
+2. Create a new chart with helm defaults.
+
+```
+helm create unittestchart
+```
+```
+cd unittestchart
+```
+
+3. Paste and run the following to create a new unit test in **unittestchart/tests/**.
+
+```
+mkdir tests/
+```
+```
+cat << EOF > tests/deployment_test.yaml
+suite: test deployment
+templates:
+  - deployment.yaml
+tests:
+  - it: should be a deployment with a set replica count
+    set:
+      replicaCount: 3
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: Deployment
+      - equal:
+          path: spec.replicas
+          value: 3
+EOF
+```
+```
+cat tests/deployment_test.yaml
+```
+
+4. Run unit tests (which is just one in this case)/
+
+```
+helm unittest .
+```
+
+5. Make a couple changes to the deployment manifest.
+
+```
+sed -i 's/replicas/# replicas/g' templates/deployment.yaml
+```
+```
+sed -i 's/Deployment/NotDeployment/g' templates/deployment.yaml
+```
+
+6. Run unit tests again. You should notice a couple errors.
+
+```
+helm unittest .
+```
+
+7. Revert the changes and run unit tests again. It should pass.
+
+```
+sed -i 's/# replicas/replicas/g' templates/deployment.yaml
+```
+```
+sed -i 's/NotDeployment/Deployment/g' templates/deployment.yaml
+```
+```
+helm unittest .
+```
