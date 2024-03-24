@@ -97,7 +97,7 @@ touch templates/customfunctions.tlp
 cat << EOF >> templates/customfunctions.tlp
 {{- define "customfunctions.enforceloweralphas" -}}
 {{ . | camelcase | nospace | lower }}
-{{- end -}
+{{- end -}}
 EOF
 ```
 ```
