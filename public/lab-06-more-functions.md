@@ -97,13 +97,38 @@ touch templates/customfunctions.tlp
 cat << EOF >> templates/customfunctions.tlp
 {{- define "customfunctions.enforceloweralphas" -}}
 {{ . | camelcase | nospace | lower }}
-{{- end -}}
+{{- end -}
+EOF
+```
+```
+cat templates/customfunctions.tlp
 ```
 
 3. Add a new value to your ConfigMap.
 
 ```
-cat << EOF >> templates/configmap.taml
-deployregion: "{{ include "customfunctions.enforceloweralphas" .Values.deployregion | quote }}"
+cat << EOF >> templates/configmap.yaml
+deployregion: "{{ include "customfunctions.enforceloweralphas" .Values.deployregion }}"
 EOF
 ```
+```
+cat templates/configmap.yaml
+```
+
+4. Updates values.yaml.
+
+```
+cat << EOF > values.yaml
+
+deployregion: "Bismarck North_Dakota"
+```
+
+5. Check how the function would be applied to your values (no need to deploy it turns out).
+
+```
+helm template .
+```
+
+How does the custom function manipulate the value of **deployregion** in the config map?
+
+6. Add a loop to apply your custom function to all data in the ConfigMap.
