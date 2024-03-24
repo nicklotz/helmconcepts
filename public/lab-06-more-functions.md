@@ -118,7 +118,7 @@ cat templates/configmap.yaml
 4. Updates values.yaml.
 
 ```
-cat << EOF > values.yaml
+cat << EOF >> values.yaml
 
 deployregion: "Bismarck North_Dakota"
 EOF
