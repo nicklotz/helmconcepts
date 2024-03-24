@@ -61,28 +61,30 @@ mkdir helm-user/
 cd helm-user/
 ```
 
-2. Paste and run the following to create a simple plugin/file script.
+2. Create a simple plugin/file script called **helm-user**.
 
 ```
-cat << EOF > helm-user
-#!/bin/bash
-finger $USER
-EOF
+touch helm-user
 ```
 ```
 chmod +x helm-user
 ```
 
-3. Paste and run the following to create a **plugin.yaml** containing plugin metadata.
+3. Populate **helm-user** with the following.
 
 ```
-cat << EOF > plugin.yaml
+#!/bin/bash
+finger $USER
+```
+
+3. Create another file called **plugin.yaml** and populate it with the following content.
+
+```yaml
 name: "user"
 version: "0.1.0"
 usage: "helm user"
 description: "This plugin shows details about the current user using Helm"
 command: "$HELM_PLUGIN_DIR/helm-user"
-EOF
 ```
 
 4. Install the plugin locally.
