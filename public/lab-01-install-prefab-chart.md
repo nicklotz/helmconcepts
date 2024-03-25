@@ -42,7 +42,7 @@ curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
 7. Create a cluster.
 
 ```
-k3d cluster create mycluster
+k3d cluster create -p "80:80@loadbalancer" -p "443:443@loadbalancer"
 ```
 
 8. Follow [these instructions](https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/) to install kubeclt on your OS and architecture.
