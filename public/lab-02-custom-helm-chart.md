@@ -293,7 +293,7 @@ kubectl get pods
 curl http://localhost
 ```
 
-## E. Create and deply a new version of the application and helm chart.
+## E. Create and deploy a new version of the application and helm chart.
 
 1. Navigate up to the *parent* **myapp/** directory.
 
