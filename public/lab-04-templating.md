@@ -216,9 +216,10 @@ helm uninstall myapptemplate
 cd myapptemplate/templates
 ```
 
-2. Paste the following into the **spec.containers** portion of **deployments.yaml**, just after line 53.
+2. Paste the following into the **spec.containers** portion of **deployments.yaml**, just after the **{{- end }}** block on line 52.
 
 ```yaml
+          {{- if .Values.environment.isTest }}
           env:
            - name: ENVIRONMENT
              value: test
