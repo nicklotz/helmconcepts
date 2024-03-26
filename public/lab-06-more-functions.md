@@ -93,7 +93,7 @@ kubectl get configmap functionschart-configmap -o yaml
 1. Create a new file in **functionschart/templates**.
 
 ```
-touch templates/customfunctions.tlp
+touch templates/customfunctions.tpl
 ```
 
 2. Add a new function to your custom functions file.
@@ -143,6 +143,9 @@ Next we'll add a loop to apply the custom function iteratively to data in a list
 
 ```
 sed -i '/^deployregion/d' values.yaml
+```
+```
+sed -i '/^deployregion/d' templates/configmap.yaml
 ```
 ```yaml
 cat << EOF >> values.yaml
