@@ -233,7 +233,7 @@ helm uninstall myspringapp
 1. Install a one-off customization of the helm chart, specifying a different replica count and "app environment".
 
 ```
-helm install spring-boot-app ./spring-boot-app --set replicaCount=2,appConfig.environment=production
+helm install myspringapp ./myspringapp --set replicaCount=2,appConfig.environment=production
 ```
 
 2. Check that the deployment's pods are running. How many are running now, and why?
