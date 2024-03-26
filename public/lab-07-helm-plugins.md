@@ -5,7 +5,7 @@
 1. List existing Helm plugins.
 
 ```
-helm plugins list
+helm plugin list
 ```
 
 2. Download a new, third party plugin, [helm diff](https://github.com/databus23/helm-diff).
