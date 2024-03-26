@@ -47,7 +47,7 @@ kubectl get pods
 6. Test the release with the default **integration test**.
 
 ```
-helm test
+helm test mycharts
 ```
 
 7. Uninstall the release.
@@ -89,6 +89,7 @@ cat << EOF >> values.yaml
 os: mac
 
 arch: arm64
+EOF
 ```
 ```
 cat -n values.yaml
