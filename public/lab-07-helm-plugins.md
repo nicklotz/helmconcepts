@@ -101,8 +101,11 @@ helm user
 
 ## C. Use the Helm S3 plugin
 
-1. Install the AWS command line tools if you don't have them, for example
+1. Install helm s3 plugin as well as the AWS command line tools if you don't have them, for example. 
 
+```
+helm plugin install https://github.com/hypnoglow/helm-s3.git
+```
 ```
 sudo apt-get install -y awscli
 ```
