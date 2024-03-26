@@ -219,8 +219,8 @@ cd myapptemplate/templates
 2. Paste the following into the **spec.containers** portion of **deployments.yaml**, just after the **{{- end }}** block on line 52.
 
 ```yaml
-          {{- if .Values.environment.isTest }}
           env:
+          {{- if .Values.environment.isTest }}
            - name: ENVIRONMENT
              value: test
           {{- end }}
@@ -231,9 +231,9 @@ The indentation relative to the surrounding code should look like this:
 ```
     50	          volumeMounts:
     51	            {{- toYaml . | nindent 12 }}
-    52	          {{- end }}
-    53	          {{- if .Values.environment.isTest }}
-    54	          env:
+    52	          {{- end }} 
+    53	          env:
+    54	          {{- if .Values.environment.isTest }}
     55	           - name: ENVIRONMENT
     56	             value: test
     57	          {{- end }}
@@ -284,10 +284,9 @@ We can also use **range**, basically a for loop, to iterate over an arbitrary li
 cd myapptemplates/templates/
 ```
 
-7. Paste the following code below line 57 in **deployment.yaml**, i.e. underneath your previous change.
+7. Paste the following code below line 57 in **deployment.yaml**, i.e. underneath your previous change to **env**.
 
 ```yaml
-          env:
           {{- range .Values.envVars }}
            - name: {{ .name }}
              value: {{ .value }}
@@ -299,20 +298,19 @@ That section of deployment.yaml should therefore look like:
 ```yaml
     50	          volumeMounts:
     51	            {{- toYaml . | nindent 12 }}
-    52	          {{- end }}
-    53	          {{- if .Values.environment.isTest }}
-    54	          env:
+    52	          {{- end }} 
+    53	          env:
+    54	          {{- if .Values.environment.isTest }}
     55	           - name: ENVIRONMENT
     56	             value: test
     57	          {{- end }}
-    58	          env:
-    59	          {{- range .Values.envVars }}
-    60	           - name: {{ .name }}
-    61	             value: {{ .value }}
-    62	          {{- end }}
-    63	      {{- with .Values.volumes }}
-    64	      volumes:
-    65	        {{- toYaml . | nindent 8 }}
+    58	          {{- range .Values.envVars }}
+    59	           - name: {{ .name }}
+    60	             value: {{ .value }}
+    61	          {{- end }}
+    62	      {{- with .Values.volumes }}
+    63	      volumes:
+    64	        {{- toYaml . | nindent 8 }}
 ```
 
 8. Add some environment variables to **values.yaml**.
