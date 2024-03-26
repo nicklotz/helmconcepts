@@ -145,7 +145,7 @@ Next we'll add a loop to apply the custom function iteratively to data in a list
 sed -i '/^deployregion/d' values.yaml
 ```
 ```
-sed -i '/^deployregion/d' templates/configmap.yaml
+sed -i '/^  deployregion/d' templates/configmap.yaml
 ```
 ```yaml
 cat << EOF >> values.yaml
