@@ -163,7 +163,7 @@ helm repo list
 7. Package and push the current version of the **pluginschart** to S3.
 
 ```
-helm package plugins
+helm package pluginschart
 ```
 ```
 helm s3 push pluginschart-0.2.0.tgz pluginschart
