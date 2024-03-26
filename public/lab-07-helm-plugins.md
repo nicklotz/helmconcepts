@@ -70,7 +70,7 @@ touch helm-user
 chmod +x helm-user
 ```
 
-3. Populate **helm-user** with the following.
+3. Populate **helm-user** with the following text.
 
 ```
 #!/bin/bash
