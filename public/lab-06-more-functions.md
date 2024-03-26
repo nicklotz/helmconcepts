@@ -113,7 +113,7 @@ cat templates/customfunctions.tlp
 
 ```yaml
 cat << EOF >> templates/configmap.yaml
-deployregion: "{{ include "customfunctions.enforceloweralphas" .Values.deployregion }}"
+  deployregion: "{{ include "customfunctions.enforceloweralphas" .Values.deployregion }}"
 EOF
 ```
 ```
