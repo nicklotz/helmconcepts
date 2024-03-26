@@ -99,7 +99,7 @@ touch templates/customfunctions.tlp
 2. Add a new function to your custom functions file.
 
 ```go
-cat << EOF >> templates/customfunctions.tlp
+cat << EOF >> templates/customfunctions.tpl
 {{- define "customfunctions.enforceloweralphas" -}}
 {{ . | camelcase | nospace | lower }}
 {{- end -}}
