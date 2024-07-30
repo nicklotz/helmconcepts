@@ -103,6 +103,9 @@ docker push $DOCKERUSER/myapp:v1
 ```
 mkdir helm/
 ```
+```
+cd helm/
+```
 
 2. Run the following to create a new chart directory structure.
 
