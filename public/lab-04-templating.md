@@ -273,7 +273,7 @@ cd ../
 helm package myapptemplate
 ```
 ```
-helm upgrade myapptemplate myapptemplate --version 0.4.0 --set environment.isTest=true
+helm install myapptemplate myapptemplate --version 0.4.0 --set environment.isTest=true
 ```
 
 5. Check the deployment's environment variables.
