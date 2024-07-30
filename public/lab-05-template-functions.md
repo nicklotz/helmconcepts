@@ -301,7 +301,7 @@ helm lint .
 cd ../
 ```
 ```
-helm install myspringapp ./myspringapp -f custom-values.yaml
+helm install myspringapp ./myspringapp -f myspringapp/custom-values.yaml
 ```
 
 9. Check if the chart deployed with the custom values.
