@@ -44,7 +44,7 @@ helm install myapptemplate myapptemplate --version 0.1.0
 kubectl describe pods | grep Image
 ```
 
-6. Navigate to **myapptemplates/templates/**
+6. Navigate to **myapptemplate/templates/**
 
 ```
 cd myapptemplates/templates
