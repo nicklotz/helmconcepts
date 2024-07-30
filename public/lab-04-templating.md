@@ -5,6 +5,12 @@
 1. In a new/empty directory create a new helm chart.
 
 ```
+mkdir -p ~/myapptemplate/helm/
+```
+```
+cd ~/myapptemplate/helm/
+```
+```
 helm create myapptemplate
 ```
 
