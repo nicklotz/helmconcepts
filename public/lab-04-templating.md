@@ -153,10 +153,10 @@ kubectl describe pods | grep Image
 
 How has it changed? What does this tell you about the precedence of override values in Helm charts? In which of **Chart.yaml**, **values.yaml**, or **deployment.yaml** should we have set the tag?
 
-20. Navigate into **myapptemplates/templates**.
+20. Navigate into **myapptemplate/templates**.
 
 ```
-cd myapptemplates/templates
+cd myapptemplate/templates
 ```
 
 21. Restore **deployment.yaml** back to its previous configuration
