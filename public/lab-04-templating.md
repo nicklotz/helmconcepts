@@ -47,7 +47,7 @@ kubectl describe pods | grep Image
 6. Navigate to **myapptemplate/templates/**
 
 ```
-cd myapptemplates/templates
+cd myapptemplate/templates
 ```
 
 7. Inspect **deployment.yaml**. Which line(s) specify the Docker image used in the deployment?
