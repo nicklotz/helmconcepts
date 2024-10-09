@@ -296,6 +296,11 @@ kubectl get pods
 curl http://localhost
 ```
 
+> If you are running K3D without preconfigured port mappings, run the following.
+> `kubectl port-forward svc/myapp 8080:5000`
+> Then `curl http://localhost:8080`
+
+
 ## E. Create and deploy a new version of the application and helm chart.
 
 1. Navigate up to the *parent* **myapp/** directory.
